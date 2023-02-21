@@ -3,7 +3,7 @@ on:
     branches:
       - main
 
-name: 🚀 Deploy main
+name: 🚀 Run main
 concurrency: deploy_main
 
 permissions:
