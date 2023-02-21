@@ -43,17 +43,8 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-      - name: 💾 Cache Nx cache
-        id: package-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            nx-cache
-          # Cache will be updated at every run: https://github.com/actions/cache/blob/main/workarounds.md#update-a-cache
-          key: ${{ runner.os }}-nx-cache-${{ steps.setup-node.outputs.node-version }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-nx-cache-${{ steps.setup-node.outputs.node-version }}-
-            ${{ runner.os }}-nx-cache-
+      - name: Set up NPM authentication
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_PERSONAL_TOKEN }}" >> ~/.npmrc
       - name: '🏗 Package'
         run: pnpm nx affected --target=package --parallel=2
       - name: '🧪 Run tests'
