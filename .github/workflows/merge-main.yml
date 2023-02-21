@@ -10,6 +10,7 @@ permissions:
   id-token: write # this is required for AWS https://github.com/aws-actions/configure-aws-credentials#usage
   contents: read # this is required for Nx https://github.com/nrwl/nx-set-shas#permissions-in-v2
   actions: read # this is required for Nx https://github.com/nrwl/nx-set-shas#permissions-in-v2
+  packages: read 
 
 env:
   CI: true
@@ -32,14 +33,16 @@ jobs:
           fetch-depth: 0
       - uses: nrwl/nx-set-shas@v3
       - uses: pnpm/action-setup@v2.2.3
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Setup Node.js
         id: setup-node
         uses: actions/setup-node@v3
+        scope: '@greg-torrington'
+        registry-url: 'https://npm.pkg.github.com'
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
       - name: 💾 Cache Nx cache
         id: package-cache
         uses: actions/cache@v3
@@ -55,10 +58,3 @@ jobs:
         run: pnpm nx affected --target=package --parallel=2
       - name: '🧪 Run tests'
         run: pnpm nx affected --targets=test-linter,test-type,test-unit,test-circular --parallel=2
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN_PRODUCTION }}
-      - name: '🚀 Deploy main'
-        run: pnpm nx affected --target=deploy-production --parallel=2
