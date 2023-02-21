@@ -25,6 +25,7 @@
     "@swarmion/serverless-helpers": "^0.25.0"
   },
   "devDependencies": {
+    "@greg-torrington/core-contracts": "7.7.7",
     "@import-swarmion-contracts/core-contracts": "1.0.0",
     "@serverless/typescript": "^3.27.0",
     "@types/node": "^18.11.13",
